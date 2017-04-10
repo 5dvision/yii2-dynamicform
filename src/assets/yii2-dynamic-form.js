@@ -59,7 +59,7 @@
         var $template = $(widgetOptions.template);
         $template.find('div[data-dynamicform]').each(function(){
             var widgetOptions = eval($(this).attr('data-dynamicform'));
-            if ($(widgetOptions.widgetItem).length > 1) {
+			if ($(widgetOptions.widgetItem).length > 1 &&  $(this).find(widgetOptions.widgetItem).length > 1) {
                 var item = $(this).find(widgetOptions.widgetItem).first()[0].outerHTML;
                 $(this).find(widgetOptions.widgetBody).html(item);
             }
@@ -94,7 +94,7 @@
     };
 
     var _getWidgetOptionsRoot = function(widgetOptions) {
-        return eval($(widgetOptions.widgetBody).parents('div[data-dynamicform]').last().attr('data-dynamicform'));
+		return eval($('.'+widgetOptions.widgetContainer+' '+widgetOptions.widgetBody).parents('div[data-dynamicform]').last().attr('data-dynamicform'));
     };
 
     var _getLevel = function($elem) {
@@ -208,7 +208,10 @@
 
                     widgetsOptions = widgetsOptions.reverse();
                     for (var i = identifiers.length - 1; i >= 1; i--) {
-                        identifiers[i] = $elem.closest(widgetsOptions[i].widgetItem).index();
+                        //identifiers[i] = $elem.closest(widgetsOptions[i].widgetItem).index();
+						if(typeof widgetsOptions[i] !== 'undefined'){
+                            identifiers[i] = $elem.closest(widgetsOptions[i].widgetItem).index();
+                        }
                     }
                 }
 
@@ -220,7 +223,7 @@
             }
         }
 
-        if (id !== newID) {
+        if (id !== newID && widgetOptions != undefined) {
             $elem.closest(widgetOptions.widgetItem).find('.field-' + id).each(function() {
                 $(this).removeClass('field-' + id).addClass('field-' + newID);
             });
@@ -250,7 +253,10 @@
 
                     widgetsOptions = widgetsOptions.reverse();
                     for (var i = identifiers.length - 1; i >= 1; i--) {
-                        identifiers[i] = $elem.closest(widgetsOptions[i].widgetItem).index();
+                        //identifiers[i] = $elem.closest(widgetsOptions[i].widgetItem).index();
+						if(typeof widgetsOptions[i] !== 'undefined'){
+                            identifiers[i] = $elem.closest(widgetsOptions[i].widgetItem).index();
+                        }
                     }
                 }
 
@@ -265,7 +271,8 @@
     var _updateAttributes = function(widgetOptions) {
         var widgetOptionsRoot = _getWidgetOptionsRoot(widgetOptions);
 
-        $(widgetOptionsRoot.widgetItem).each(function(index) {
+        //$(widgetOptionsRoot.widgetItem).each(function(index) {
+		$('.'+widgetOptionsRoot.widgetContainer+' '+widgetOptionsRoot.widgetItem).each(function(index) {
             var $item = $(this);
             $(this).find('*').each(function() {
                 // update "id" attribute
@@ -348,11 +355,11 @@
         }
 
         // "kartik-v/yii2-widget-datepicker"
-        var $hasDatepicker = $(widgetOptionsRoot.widgetItem).find('[data-krajee-datepicker]');
+        var $hasDatepicker = $(widgetOptionsRoot.widgetItem).find('[data-krajee-kvdatepicker]');
         if ($hasDatepicker.length > 0) {
             $hasDatepicker.each(function() {
-                $(this).parent().removeData().datepicker('remove');
-                $(this).parent().datepicker(eval($(this).attr('data-krajee-datepicker')));
+				$(this).parent().removeData().kvDatepicker('remove');
+				$(this).parent().kvDatepicker(eval($(this).attr('data-krajee-kvdatepicker')));
             });
         }
 
